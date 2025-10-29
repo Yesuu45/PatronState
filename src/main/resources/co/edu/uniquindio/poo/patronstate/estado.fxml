@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="506.0" prefWidth="714.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.poo.patronstate.ViewController.EstadoViewController">
+   <children>
+      <AnchorPane layoutX="12.0" layoutY="13.0" prefHeight="494.0" prefWidth="710.0">
+         <children>
+            <Label layoutX="250" layoutY="20" style="-fx-font-weight: bold; -fx-font-size: 18px;" text="Estado de Pedidos" />
+            <Button fx:id="botonVolver" layoutX="20" layoutY="20" onAction="#onVolver" text="Volver" />
+            <TableView fx:id="tablaPedidos" layoutX="20" layoutY="60" prefHeight="360" prefWidth="660">
+               <columns>
+                  <TableColumn fx:id="columnaId" prefWidth="200" text="ID Pedido" />
+                  <TableColumn fx:id="columnaEstado" prefWidth="200" text="Estado" />
+                  <TableColumn fx:id="columnaTotal" prefWidth="240" text="Total" />
+               </columns>
+            </TableView>
+            <Button fx:id="botonPagado" layoutX="26.0" layoutY="444.0" onAction="#estadoPagado" text="Pagado" />
+            <Button fx:id="botonEnviado" layoutX="121.0" layoutY="444.0" onAction="#estadoEnviado" text="Enviado" />
+            <Button fx:id="botonCancelar" layoutX="596.0" layoutY="444.0" onAction="#cancelarPedido" text="Cancelar" />
+            <Button fx:id="botonEntregado" layoutX="224.0" layoutY="444.0" onAction="#estadoEntregado" text="Entegrado" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

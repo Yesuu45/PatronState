@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="534.0" prefWidth="698.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="co.edu.uniquindio.poo.patronstate.ViewController.CatalogoViewController">
+    <children>
+        <Label layoutX="250" layoutY="14" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-alignment: center; -fx-pref-width: 200px;" text="Catálogo de Productos" />
+        <Button fx:id="botonVolver" layoutX="20" layoutY="14" onAction="#onVolver" text="Volver" />
+
+        <TextField fx:id="campoBusqueda" layoutX="20" layoutY="60" prefWidth="240" promptText="Buscar por nombre" />
+        <Button fx:id="botonBuscar" layoutX="270" layoutY="60" onAction="#buscarProducto" text="Buscar" />
+
+        <Label layoutX="360" layoutY="63" text="Cantidad:" />
+        <TextField fx:id="campoCantidad" layoutX="420" layoutY="60" prefWidth="60" />
+
+        <Button fx:id="botonAgregar" layoutX="500" layoutY="60" onAction="#agregarAlCarrito" text="Agregar al Carrito" />
+        <Button fx:id="botonClonar" layoutX="19.0" layoutY="488.0" onAction="#clonarProducto" text="Clonar Producto" />
+
+        <TableView fx:id="tablaProductos" layoutX="20" layoutY="110" prefHeight="360" prefWidth="660">
+            <columns>
+                <TableColumn fx:id="columnaNombre" prefWidth="420" text="Nombre" />
+                <TableColumn fx:id="columnaPrecio" prefWidth="220" text="Precio" />
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>

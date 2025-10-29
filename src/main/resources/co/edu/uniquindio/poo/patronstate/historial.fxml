@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<AnchorPane prefWidth="700" prefHeight="500"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="co.edu.uniquindio.poo.patronstate.ViewController.HistorialViewController">
+
+    <children>
+        <Label text="Historial de Pedidos" layoutX="250" layoutY="20"
+               style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+        <Button fx:id="botonVolver" text="Volver" layoutX="20" layoutY="20" onAction="#onVolver"/>
+
+        <TableView fx:id="tablaPedidos" layoutX="20" layoutY="60" prefWidth="660" prefHeight="360">
+            <columns>
+                <TableColumn fx:id="columnaId" text="ID Pedido" prefWidth="200"/>
+                <TableColumn fx:id="columnaEstado" text="Estado" prefWidth="200"/>
+                <TableColumn fx:id="columnaTotal" text="Total" prefWidth="240"/>
+            </columns>
+        </TableView>
+
+        <Button fx:id="botonExportar" text="Exportar Pedido Seleccionado" layoutX="20" layoutY="440" onAction="#exportarPedido"/>
+    </children>
+</AnchorPane>

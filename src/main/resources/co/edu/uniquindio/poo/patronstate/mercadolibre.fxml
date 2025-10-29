@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<AnchorPane prefHeight="500" prefWidth="700" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="co.edu.uniquindio.poo.patronstate.ViewController.MercadoLibreViewController">
+    <children>
+        <Label layoutX="200" layoutY="40" style="-fx-font-weight: bold; -fx-font-size: 22px; -fx-alignment: center; -fx-pref-width: 300px;" text="Bienvenido a MercadoLibre" />
+        <Button fx:id="botonCatalogo" layoutX="265" layoutY="150" onAction="#irAlCatalogo" prefWidth="170" text="Ir al Catálogo" />
+        <Button fx:id="botonCarrito" layoutX="265" layoutY="210" onAction="#irAlCarrito" prefWidth="170" text="Ir al Carrito" />
+        <Button fx:id="botonHistorial" layoutX="265" layoutY="270" onAction="#irAlHistorial" prefWidth="170" text="Ver Historial" />
+      <Button fx:id="botonEstado" layoutX="265.0" layoutY="324.0" onAction="#irAlEstado" prefWidth="170" text="Ver Estado" />
+    </children>
+</AnchorPane>

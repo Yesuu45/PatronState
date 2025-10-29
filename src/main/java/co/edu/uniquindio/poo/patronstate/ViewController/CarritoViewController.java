@@ -1,0 +1,187 @@
+package co.edu.uniquindio.poo.patronstate.ViewController;
+
+import co.edu.uniquindio.poo.patronstate.App;
+import co.edu.uniquindio.poo.patronstate.Controller.GestorPedidosController;
+import co.edu.uniquindio.poo.patronstate.Controller.HistorialController;
+import co.edu.uniquindio.poo.patronstate.Model.*;
+import co.edu.uniquindio.poo.patronstate.Model.Estado.EstadoPagado;
+
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+
+import java.io.IOException;
+
+
+public class CarritoViewController {
+    @FXML private TableView<DetallePedido> tablaCarrito;
+    @FXML private TableColumn<DetallePedido, String> columnaProducto;
+    @FXML private TableColumn<DetallePedido, Integer> columnaCantidad;
+    @FXML private TableColumn<DetallePedido, Double> columnaSubtotal;
+
+    @FXML private Label totalLabel;
+    @FXML private Button botonRealizarPedido;
+    @FXML private Button botonVolver;
+    @FXML private Button botonEliminar;
+    @FXML private Button botonActualizar;
+    @FXML private TextField campoNuevaCantidad;
+
+    private CarritoDeCompras carrito;
+    private GestorPedidosController gestor;
+    private HistorialController historialController;
+    private ObservableList<DetallePedido> datos;
+
+    public CarritoViewController() {}
+
+    @FXML
+    private void initialize() {
+        carrito = TiendaSession.getInstance().getCarrito();
+        gestor = new GestorPedidosController();
+        historialController = new HistorialController();
+
+        columnaProducto.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DetallePedido,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(CellDataFeatures<DetallePedido, String> param) {
+                return new SimpleStringProperty(param.getValue().getProducto().getNombre());
+            }
+        });
+        columnaCantidad.setCellValueFactory(new Callback<CellDataFeatures<DetallePedido,Integer>, ObservableValue<Integer>>() {
+            public ObservableValue<Integer> call(CellDataFeatures<DetallePedido, Integer> param) {
+                return new SimpleIntegerProperty(param.getValue().getCantidad()).asObject();
+            }
+        });
+        columnaSubtotal.setCellValueFactory(new Callback<CellDataFeatures<DetallePedido,Double>, ObservableValue<Double>>() {
+            public ObservableValue<Double> call(CellDataFeatures<DetallePedido, Double> param) {
+                return new SimpleDoubleProperty(param.getValue().getSubtotal()).asObject();
+            }
+        });
+
+        datos = FXCollections.observableArrayList(carrito.getDetalles());
+        tablaCarrito.setItems(datos);
+        actualizarTotal();
+    }
+
+    @FXML
+    private void realizarPedido() {
+        if (carrito.getDetalles().isEmpty()) {
+            mostrarAlerta("Carrito vacío", "Agrega productos antes de realizar el pedido.");
+            return;
+        }
+
+        Pedido pedido = gestor.crearPedido(carrito);
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<String>("Efectivo", "Efectivo", "Tarjeta", "PayPal", "Pasarela Externa");
+        dialog.setTitle("Método de pago");
+        dialog.setHeaderText("Seleccione un método de pago");
+        dialog.setContentText("Método:");
+        String elegido = dialog.showAndWait().orElse("Efectivo");
+
+        ProcesarPago procesador = new ProcesarPago();
+        if ("Tarjeta".equals(elegido)) {
+            procesador.setMetodoPago(new PagoTarjeta("1234-5678-9012"));
+        } else if ("PayPal".equals(elegido)) {
+            procesador.setMetodoPago(new PagoPayPal("usuario@paypal.com"));
+        } else if ("Pasarela Externa".equals(elegido)) {
+            procesador.setMetodoPago(new Pasarela("QuickPayService"));
+        } else {
+            procesador.setMetodoPago(new PagoEfectivo());
+        }
+
+        String resultado = procesador.ejecutarPago(pedido.calcularTotal());
+        mostrarInfo("Resultado del pago", resultado);
+        pedido.setEstado(new EstadoPagado(pedido));
+
+        historialController.registrarPedido(pedido);
+
+        // Exportar automáticamente el pedido pagado a TXT
+        try {
+            String ruta = "pedidos_exportados/" + pedido.getId() + ".txt";
+            historialController.exportarPedido(pedido, ruta);
+            mostrarInfo("Pedido exportado", "Se generó el archivo: " + ruta);
+        } catch (IOException e) {
+            mostrarAlerta("Exportación fallida", "No se pudo exportar el pedido: " + e.getMessage());
+        }
+
+        actualizarTotal();
+    }
+
+    @FXML
+    private void eliminarProducto() {
+        DetallePedido seleccionado = tablaCarrito.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            mostrarAlerta("Selecciona un producto", "Debes seleccionar un producto para eliminar.");
+            return;
+        }
+        carrito.getDetalles().remove(seleccionado);
+        datos.setAll(carrito.getDetalles());
+        actualizarTotal();
+        mostrarInfo("Eliminado", "Se eliminó " + seleccionado.getProducto().getNombre() + " del carrito.");
+    }
+
+    @FXML
+    private void actualizarCantidad() {
+        DetallePedido seleccionado = tablaCarrito.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            mostrarAlerta("Selecciona un producto", "Debes seleccionar un producto para actualizar su cantidad.");
+            return;
+        }
+        int nuevaCantidad = leerCantidad();
+        if (nuevaCantidad <= 0) {
+            mostrarAlerta("Cantidad inválida", "La cantidad debe ser mayor que cero.");
+            return;
+        }
+        seleccionado.setCantidad(nuevaCantidad);
+        datos.setAll(carrito.getDetalles());
+        actualizarTotal();
+        mostrarInfo("Actualizado", "Nueva cantidad: " + nuevaCantidad + " para " + seleccionado.getProducto().getNombre());
+    }
+
+    @FXML
+    private void onVolver() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(App.class.getResource("mercadolibre.fxml"));
+            AnchorPane root = loader.load();
+            Stage stage = (Stage) botonVolver.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Error", "No se pudo volver a la pantalla principal.");
+        }
+    }
+
+    private int leerCantidad() {
+        try {
+            return Integer.parseInt(campoNuevaCantidad.getText().trim());
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    private void actualizarTotal() {
+        totalLabel.setText("Total: $" + String.format("%.2f", carrito.calcularTotal()));
+    }
+
+    private void mostrarAlerta(String titulo, String msg) {
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        a.setTitle(titulo); a.setHeaderText(null); a.setContentText(msg);
+        a.showAndWait();
+    }
+
+    private void mostrarInfo(String titulo, String msg) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(titulo); a.setHeaderText(null); a.setContentText(msg);
+        a.showAndWait();
+    }
+}

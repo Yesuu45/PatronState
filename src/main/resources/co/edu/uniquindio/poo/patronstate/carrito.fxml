@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="477.0" prefWidth="700" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.poo.patronstate.ViewController.CarritoViewController">
+
+    <children>
+        <Label layoutX="260" layoutY="14" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-alignment: center; -fx-pref-width: 200px;" text="Carrito de Compras" />
+        <Button fx:id="botonVolver" layoutX="20" layoutY="14" onAction="#onVolver" text="Volver" />
+
+        <TableView fx:id="tablaCarrito" layoutX="20" layoutY="60" prefHeight="320" prefWidth="660">
+            <columns>
+                <TableColumn fx:id="columnaProducto" prefWidth="320" text="Producto" />
+                <TableColumn fx:id="columnaCantidad" prefWidth="120" text="Cantidad" />
+                <TableColumn fx:id="columnaSubtotal" prefWidth="200" text="Subtotal" />
+            </columns>
+        </TableView>
+
+        <Label layoutX="20" layoutY="400" text="Nueva Cantidad:" />
+        <TextField fx:id="campoNuevaCantidad" layoutX="120" layoutY="396" prefWidth="70" />
+
+        <Button fx:id="botonActualizar" layoutX="200" layoutY="395" onAction="#actualizarCantidad" text="Actualizar Cantidad" />
+
+        <Button fx:id="botonEliminar" layoutX="360.0" layoutY="395.0" onAction="#eliminarProducto" styleClass="boton-eliminar" text="Eliminar Producto" />
+
+        <Button fx:id="botonRealizarPedido" layoutX="549.0" layoutY="427.0" onAction="#realizarPedido" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: #0B57D0; -fx-text-fill: white;" text="Realizar Pedido" />
+
+        <Label fx:id="totalLabel" layoutX="527.0" layoutY="399.0" prefHeight="20.0" prefWidth="154.0" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Total: $0.00" textAlignment="CENTER" />
+    </children>
+</AnchorPane>
