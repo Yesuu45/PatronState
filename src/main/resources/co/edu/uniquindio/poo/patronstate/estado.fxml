@@ -1,29 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="506.0" prefWidth="714.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.poo.patronstate.ViewController.EstadoViewController">
-   <children>
-      <AnchorPane layoutX="12.0" layoutY="13.0" prefHeight="494.0" prefWidth="710.0">
-         <children>
-            <Label layoutX="250" layoutY="20" style="-fx-font-weight: bold; -fx-font-size: 18px;" text="Estado de Pedidos" />
-            <Button fx:id="botonVolver" layoutX="20" layoutY="20" onAction="#onVolver" text="Volver" />
-            <TableView fx:id="tablaPedidos" layoutX="20" layoutY="60" prefHeight="360" prefWidth="660">
-               <columns>
-                  <TableColumn fx:id="columnaId" prefWidth="200" text="ID Pedido" />
-                  <TableColumn fx:id="columnaEstado" prefWidth="200" text="Estado" />
-                  <TableColumn fx:id="columnaTotal" prefWidth="240" text="Total" />
-               </columns>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="co.edu.uniquindio.poo.patronstate.ViewController.EstadoViewController"
+            prefWidth="714" prefHeight="506"
+            style="-fx-background-color: linear-gradient(to bottom right, #f9f9f9, #e6f0ff);">
+
+    <children>
+        <VBox layoutX="20" layoutY="14" spacing="15" prefWidth="674">
+
+            <!-- Título y botón volver -->
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <Button fx:id="botonVolver" text="← Volver" onAction="#onVolver"
+                        style="-fx-background-color: #8888ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" />
+                <Label text="Estado de Pedidos"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2a2a2a;" />
+            </HBox>
+
+            <!-- Tabla de pedidos -->
+            <TableView fx:id="tablaPedidos" prefHeight="360" prefWidth="674"
+                       style="-fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8;">
+                <columns>
+                    <TableColumn fx:id="columnaId" text="ID Pedido" prefWidth="200"/>
+                    <TableColumn fx:id="columnaEstado" text="Estado" prefWidth="200"/>
+                    <TableColumn fx:id="columnaTotal" text="Total" prefWidth="274"/>
+                </columns>
             </TableView>
-            <Button fx:id="botonPagado" layoutX="26.0" layoutY="444.0" onAction="#estadoPagado" text="Pagado" />
-            <Button fx:id="botonEnviado" layoutX="121.0" layoutY="444.0" onAction="#estadoEnviado" text="Enviado" />
-            <Button fx:id="botonCancelar" layoutX="596.0" layoutY="444.0" onAction="#cancelarPedido" text="Cancelar" />
-            <Button fx:id="botonEntregado" layoutX="224.0" layoutY="444.0" onAction="#estadoEntregado" text="Entegrado" />
-         </children>
-      </AnchorPane>
-   </children>
+
+            <!-- Botones de acción -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button fx:id="botonPagado" text="Pagado" onAction="#estadoPagado"
+                        style="-fx-background-color: #0B57D0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
+                        prefWidth="100" prefHeight="30"/>
+                <Button fx:id="botonEnviado" text="Enviado" onAction="#estadoEnviado"
+                        style="-fx-background-color: #0B57D0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
+                        prefWidth="100" prefHeight="30"/>
+                <Button fx:id="botonEntregado" text="Entregado" onAction="#estadoEntregado"
+                        style="-fx-background-color: #0B57D0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
+                        prefWidth="100" prefHeight="30"/>
+                <Button fx:id="botonCancelar" text="Cancelar" onAction="#cancelarPedido"
+                        style="-fx-background-color: #FF4C4C; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
+                        prefWidth="100" prefHeight="30"/>
+            </HBox>
+
+        </VBox>
+    </children>
 </AnchorPane>

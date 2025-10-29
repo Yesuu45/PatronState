@@ -9,33 +9,28 @@ public class EstadoNuevo  extends EstadoPedido{
     }
 
     @Override
-    public void pagar( ) {
-        System.out.println("✅ Pedido pagado , en espera de confirmación ");
+    public void pagar() {
+        System.out.println("✅ Pedido pagado.");
         pedido.cambiarEstado(new EstadoPagado(pedido));
-
     }
 
     @Override
-    public void enviar( ) {
+    public void enviar() {
         System.out.println("❌ No se puede enviar, aún no está pagado.");
-
-
     }
 
     @Override
-    public void entregar( ) {
-        System.out.println("❌ No se puede enviar, aún no está pagado.");
-
-
+    public void entregar() {
+        System.out.println("❌ No se puede entregar, aún no está pagado.");
     }
 
     @Override
-    public void cancelar( ) {
+    public void cancelar() {
         System.out.println("🛑 Pedido cancelado.");
         pedido.cambiarEstado(new EstadoCancelado(pedido));
     }
 
-
+    @Override
     public void ejecutarAccion(String accion) {
         switch (accion.toLowerCase()) {
             case "pagar":
@@ -54,7 +49,5 @@ public class EstadoNuevo  extends EstadoPedido{
                 System.out.println("⚠️ Acción no válida: " + accion);
         }
     }
-
-
 
 }
