@@ -5,7 +5,6 @@ import co.edu.uniquindio.poo.patronstate.Controller.GestorEstadosController;
 import co.edu.uniquindio.poo.patronstate.Model.Pedido;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,10 +14,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 import java.io.IOException;
 
@@ -28,7 +25,7 @@ public class EstadoViewController {
     @FXML private Button botonEntregado;
     @FXML private Button botonCancelar;
     @FXML private Button botonEnviado;
-    @FXML private Button botonPagado;
+    @FXML private Button botonPagar; // 🔹 Nuevo botón
 
     @FXML private TableView<Pedido> tablaPedidos;
     @FXML private TableColumn<Pedido, String> columnaId;
@@ -42,12 +39,10 @@ public class EstadoViewController {
     private void initialize() {
         gestorEstadosController = new GestorEstadosController();
 
-        // Configuramos columnas
         columnaId.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getId()));
         columnaEstado.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getEstado().toString()));
         columnaTotal.setCellValueFactory(param -> new SimpleDoubleProperty(param.getValue().calcularTotal()).asObject());
 
-        // Obtenemos pedidos desde GestorEstadosController
         datos = FXCollections.observableArrayList(gestorEstadosController.obtenerPedidos());
         tablaPedidos.setItems(datos);
     }
@@ -60,6 +55,7 @@ public class EstadoViewController {
         return pedido;
     }
 
+    // 🔹 Nuevo método para procesar el pago
     @FXML
     void estadoPagado() {
         cambiarEstadoPedido("pagar");
@@ -83,15 +79,37 @@ public class EstadoViewController {
     private void cambiarEstadoPedido(String accion) {
         Pedido pedidoSeleccionado = getPedidoSeleccionado();
         if (pedidoSeleccionado != null) {
-            try {
-                // Le pasamos el pedido seleccionado al gestor
-                gestorEstadosController.setPedido(pedidoSeleccionado);
-                gestorEstadosController.cambiarEstado(accion);
-                tablaPedidos.refresh(); // Refresca la tabla para mostrar el estado actualizado
-            } catch (IOException e) {
-                mostrarAlerta("Error", "No se pudo cambiar el estado: " + e.getMessage());
+            gestorEstadosController.setPedido(pedidoSeleccionado);
+
+            boolean exito = gestorEstadosController.cambiarEstado(accion);
+
+            if (exito) {
+                tablaPedidos.refresh();
+
+                String mensaje = switch (accion) {
+                    case "pagar" -> "💳 El pedido fue PAGADO correctamente.";
+                    case "enviar" -> "📦 El pedido fue marcado como ENVIADO.";
+                    case "entregar" -> "🎉 El pedido fue marcado como ENTREGADO.";
+                    case "cancelar" -> "❌ El pedido fue CANCELADO.";
+                    default -> "✅ Acción realizada correctamente.";
+                };
+
+                mostrarInfo("Estado actualizado", mensaje);
+
+            } else {
+                mostrarAlerta("Acción inválida",
+                        "🚫 No se pudo realizar la acción '" + accion + "' sobre el pedido seleccionado.\n" +
+                                "Verifica que el estado actual lo permita.");
             }
         }
+    }
+
+    private void mostrarInfo(String titulo, String msg) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(titulo);
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.showAndWait();
     }
 
     @FXML
@@ -115,4 +133,3 @@ public class EstadoViewController {
         a.showAndWait();
     }
 }
-

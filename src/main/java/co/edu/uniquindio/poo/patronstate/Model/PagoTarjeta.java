@@ -9,6 +9,6 @@ public class PagoTarjeta implements Pago {
 
     @Override
     public String procesarPago(double monto) {
-        return "Pago con tarjeta (" + numeroTarjeta + ") aprobado por $" + String.format("%.2f", monto);
+        return "Pago con tarjeta (" + numeroTarjeta + ") aprobado por $" + String.format("%.2f", monto) + " en espera de confirmacion ";
     }
 }

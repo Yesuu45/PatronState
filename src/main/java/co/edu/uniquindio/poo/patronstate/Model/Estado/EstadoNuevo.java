@@ -2,52 +2,55 @@ package co.edu.uniquindio.poo.patronstate.Model.Estado;
 
 import co.edu.uniquindio.poo.patronstate.Model.Pedido;
 
-public class EstadoNuevo  extends EstadoPedido{
+public class EstadoNuevo implements EstadoPedido {
+
+    protected Pedido pedido;
 
     public EstadoNuevo(Pedido pedido) {
-        super(pedido);
+        this.pedido = pedido;
     }
 
     @Override
     public void pagar() {
-        System.out.println("✅ Pedido pagado.");
+        System.out.println("✅ Pedido pagado correctamente.");
         pedido.cambiarEstado(new EstadoPagado(pedido));
     }
 
     @Override
     public void enviar() {
-        System.out.println("❌ No se puede enviar, aún no está pagado.");
+        throw new IllegalStateException("❌ No se puede enviar un pedido que aún no ha sido pagado.");
     }
 
     @Override
     public void entregar() {
-        System.out.println("❌ No se puede entregar, aún no está pagado.");
+        throw new IllegalStateException("❌ No se puede entregar un pedido que aún no ha sido pagado.");
     }
 
     @Override
     public void cancelar() {
-        System.out.println("🛑 Pedido cancelado.");
+        System.out.println("🛑 Pedido cancelado correctamente.");
         pedido.cambiarEstado(new EstadoCancelado(pedido));
+    }
+
+    @Override
+    public void nuevo() {
+        System.out.println("📌 Pedido ya está en estado NUEVO.");
+    }
+
+    @Override
+    public String toString() {
+        return "NUEVO";
     }
 
     @Override
     public void ejecutarAccion(String accion) {
         switch (accion.toLowerCase()) {
-            case "pagar":
-                pagar();
-                break;
-            case "enviar":
-                enviar();
-                break;
-            case "entregar":
-                entregar();
-                break;
-            case "cancelar":
-                cancelar();
-                break;
-            default:
-                System.out.println("⚠️ Acción no válida: " + accion);
+            case "pagar" -> pagar();
+            case "enviar" -> enviar();
+            case "entregar" -> entregar();
+            case "cancelar" -> cancelar();
+            case "nuevo" -> nuevo();
+            default -> throw new IllegalArgumentException("⚠️ Acción no válida: " + accion);
         }
     }
-
 }

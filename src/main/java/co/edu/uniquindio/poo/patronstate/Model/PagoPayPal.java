@@ -9,6 +9,6 @@ public class PagoPayPal implements Pago{
 
     @Override
     public String procesarPago(double monto) {
-        return "Pago realizado con PayPal (" + correo + ") por $" + String.format("%.2f", monto);
+        return "Pago realizado con PayPal (" + correo + ") por $" + String.format("%.2f", monto) + " en espera de confirmacion ";
     }
 }

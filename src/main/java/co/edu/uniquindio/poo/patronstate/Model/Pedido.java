@@ -36,9 +36,16 @@ public class Pedido {
         this.estado = nuevoEstado;
     }
 
-    public void procesar(String accion) {
-        estado.ejecutarAccion(accion);
+    public boolean procesar(String accion) {
+        try {
+            estado.ejecutarAccion(accion);
+            return true; // ✅ Si la acción se ejecutó sin errores
+        } catch (IllegalStateException e) {
+            System.out.println("🚫 No se puede realizar la acción: " + e.getMessage());
+            return false; // ❌ Acción inválida para el estado actual
+        }
     }
+
 
 
 

@@ -33,5 +33,6 @@ public class CarritoDeCompras {
         return total;
     }
 
-    public void vaciar() { detalles.clear(); }
+    public void vaciar() {
+        detalles.clear(); }
 }

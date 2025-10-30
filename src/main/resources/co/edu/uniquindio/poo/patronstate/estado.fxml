@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="co.edu.uniquindio.poo.patronstate.ViewController.EstadoViewController"
@@ -12,7 +14,7 @@
     <children>
         <VBox layoutX="20" layoutY="14" spacing="15" prefWidth="674">
 
-            <!-- Título y botón volver -->
+            <!-- Encabezado -->
             <HBox spacing="20" alignment="CENTER_LEFT">
                 <Button fx:id="botonVolver" text="← Volver" onAction="#onVolver"
                         style="-fx-background-color: #8888ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" />
@@ -32,15 +34,20 @@
 
             <!-- Botones de acción -->
             <HBox spacing="15" alignment="CENTER">
-                <Button fx:id="botonPagado" text="Pagado" onAction="#estadoPagado"
-                        style="-fx-background-color: #0B57D0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
+
+                <!-- 🔹 Nuevo botón PAGAR -->
+                <Button fx:id="botonPagar" text="Pagar" onAction="#estadoPagado"
+                        style="-fx-background-color: #28A745; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
                         prefWidth="100" prefHeight="30"/>
+
                 <Button fx:id="botonEnviado" text="Enviado" onAction="#estadoEnviado"
                         style="-fx-background-color: #0B57D0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
                         prefWidth="100" prefHeight="30"/>
+
                 <Button fx:id="botonEntregado" text="Entregado" onAction="#estadoEntregado"
                         style="-fx-background-color: #0B57D0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
                         prefWidth="100" prefHeight="30"/>
+
                 <Button fx:id="botonCancelar" text="Cancelar" onAction="#cancelarPedido"
                         style="-fx-background-color: #FF4C4C; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
                         prefWidth="100" prefHeight="30"/>

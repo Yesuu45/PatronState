@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 
+import java.io.File;
 import java.io.IOException;
 
 
@@ -78,42 +79,53 @@ public class CarritoViewController {
             return;
         }
 
+        // Crear el pedido en estado "Nuevo"
         Pedido pedido = gestor.crearPedido(carrito);
 
-        ChoiceDialog<String> dialog = new ChoiceDialog<String>("Efectivo", "Efectivo", "Tarjeta", "PayPal", "Pasarela Externa");
+        // Registrar el pedido en el historial
+        historialController.registrarPedido(pedido);
+
+        // Mostrar mensaje de pedido NUEVO (en espera de confirmación de pago)
+        pedido.procesar("nuevo");  // ⚡ Se asegura que el estado sea "Nuevo"
+        mostrarInfo("Pedido realizado", "📌 Estado actual: " + pedido.getEstado());
+
+        // Procesar el pago después de mostrar el mensaje del estado
+        ProcesarPago procesador = getProcesarPago();
+        String resultado = procesador.ejecutarPago(pedido.calcularTotal());
+        mostrarInfo("Resultado del pago", resultado);
+
+        // Aquí puedes cambiar el estado a "Pagado" si el pago fue exitoso
+        if (resultado.toLowerCase().contains("exitoso")) {
+            pedido.procesar("pagar");  // ⚡ Cambia el estado a "Pagado" según tu patrón State
+            mostrarInfo("Estado actualizado", "✅ Estado actual: " + pedido.getEstado());
+        }
+
+        // Actualizar el total del carrito
+        actualizarTotal();
+    }
+
+
+
+
+
+    private static ProcesarPago getProcesarPago() {
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Efectivo", "Efectivo", "Tarjeta", "PayPal", "Pasarela Externa");
         dialog.setTitle("Método de pago");
         dialog.setHeaderText("Seleccione un método de pago");
         dialog.setContentText("Método:");
         String elegido = dialog.showAndWait().orElse("Efectivo");
 
+        // Configurar el procesador de pago
         ProcesarPago procesador = new ProcesarPago();
-        if ("Tarjeta".equals(elegido)) {
-            procesador.setMetodoPago(new PagoTarjeta("1234-5678-9012"));
-        } else if ("PayPal".equals(elegido)) {
-            procesador.setMetodoPago(new PagoPayPal("usuario@paypal.com"));
-        } else if ("Pasarela Externa".equals(elegido)) {
-            procesador.setMetodoPago(new Pasarela("QuickPayService"));
-        } else {
-            procesador.setMetodoPago(new PagoEfectivo());
+        switch (elegido) {
+            case "Tarjeta" -> procesador.setMetodoPago(new PagoTarjeta("1234-5678-9012"));
+            case "PayPal" -> procesador.setMetodoPago(new PagoPayPal("usuario@paypal.com"));
+            case "Pasarela Externa" -> procesador.setMetodoPago(new Pasarela("QuickPayService"));
+            default -> procesador.setMetodoPago(new PagoEfectivo());
         }
-
-        String resultado = procesador.ejecutarPago(pedido.calcularTotal());
-        mostrarInfo("Resultado del pago", resultado);
-        pedido.setEstado(new EstadoPagado(pedido));
-
-        historialController.registrarPedido(pedido);
-
-        // Exportar automáticamente el pedido pagado a TXT
-        try {
-            String ruta = "pedidos_exportados/" + pedido.getId() + ".txt";
-            historialController.exportarPedido(pedido, ruta);
-            mostrarInfo("Pedido exportado", "Se generó el archivo: " + ruta);
-        } catch (IOException e) {
-            mostrarAlerta("Exportación fallida", "No se pudo exportar el pedido: " + e.getMessage());
-        }
-
-        actualizarTotal();
+        return procesador;
     }
+
 
     @FXML
     private void eliminarProducto() {

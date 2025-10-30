@@ -16,13 +16,22 @@ public class GestorEstadosController {
         return HistorialPedido.getInstance().obtenerPedidos();
     }
 
-    public void cambiarEstado(String accion) throws IOException {
-        if (pedido != null) {
-            pedido.procesar(accion);
-        } else {
+    public boolean cambiarEstado(String accion) {
+        if (pedido == null) {
             System.out.println("⚠️ No hay un pedido seleccionado.");
+            return false;
+        }
+
+        try {
+            boolean exito = pedido.procesar(accion);
+            return exito;
+        } catch (Exception e) {
+            System.out.println("❌ Error al procesar el pedido: " + e.getMessage());
+            return false;
         }
     }
+
+
 }
 
 

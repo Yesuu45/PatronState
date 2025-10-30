@@ -2,30 +2,37 @@ package co.edu.uniquindio.poo.patronstate.Model.Estado;
 
 import co.edu.uniquindio.poo.patronstate.Model.Pedido;
 
-public class EstadoEntregado extends EstadoPedido{
-    public EstadoEntregado( Pedido pedido){
-        super(pedido);
+public class EstadoEntregado implements EstadoPedido {
+
+    protected Pedido pedido;
+
+    public EstadoEntregado(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     @Override
     public void pagar() {
-        System.out.println("❌ El pedido ya fue entregado y pagado.");
+        throw new IllegalStateException("❌ El pedido ya fue entregado y pagado.");
     }
 
     @Override
     public void enviar() {
-        System.out.println("❌ Ya fue entregado.");
+        throw new IllegalStateException("❌ El pedido ya fue entregado.");
     }
 
     @Override
     public void entregar() {
-        System.out.println("El pedido fue entregado correctamente a su destino.");
-        pedido.cambiarEstado(new EstadoEntregado(pedido));
+        throw new IllegalStateException("❌ El pedido ya fue entregado anteriormente.");
     }
 
     @Override
     public void cancelar() {
-        System.out.println("❌ No se puede cancelar un pedido ya entregado.");
+        throw new IllegalStateException("❌ No se puede cancelar un pedido ya entregado.");
+    }
+
+    @Override
+    public void nuevo() {
+        System.out.println("📌 El pedido ya fue entregado, no puede volver a NUEVO.");
     }
 
     @Override
@@ -33,4 +40,15 @@ public class EstadoEntregado extends EstadoPedido{
         return "ENTREGADO";
     }
 
+    @Override
+    public void ejecutarAccion(String accion) {
+        switch (accion.toLowerCase()) {
+            case "pagar" -> pagar();
+            case "enviar" -> enviar();
+            case "entregar" -> entregar();
+            case "cancelar" -> cancelar();
+            case "nuevo" -> nuevo();
+            default -> throw new IllegalArgumentException("⚠️ Acción no válida: " + accion);
+        }
+    }
 }

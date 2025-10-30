@@ -8,12 +8,14 @@ import javafx.stage.Stage;
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(App.class.getResource("mercadolibre.fxml"));
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("mercadolibre.fxml"));
         Scene scene = new Scene(loader.load(), 700, 500);
         primaryStage.setTitle("MercadoLibre");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    public static void main(String[] args) { launch(args); }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

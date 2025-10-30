@@ -23,6 +23,10 @@ public class HistorialController {
     }
 
     public void exportarPedido(Pedido pedido, String rutaArchivoTxt) throws IOException {
+        if (!"PAGADO".equals(pedido.getEstado().toString())) {
+            throw new IllegalStateException("❌ Solo se pueden exportar pedidos pagados.");
+        }
         ExportarArchivo.exportarPedido(pedido, rutaArchivoTxt);
     }
+
 }
