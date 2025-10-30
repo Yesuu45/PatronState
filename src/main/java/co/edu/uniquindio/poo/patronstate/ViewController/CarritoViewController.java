@@ -71,7 +71,6 @@ public class CarritoViewController {
         tablaCarrito.setItems(datos);
         actualizarTotal();
     }
-
     @FXML
     private void realizarPedido() {
         if (carrito.getDetalles().isEmpty()) {
@@ -79,30 +78,34 @@ public class CarritoViewController {
             return;
         }
 
-        // Crear el pedido en estado "Nuevo"
+        // Crear el pedido en estado "Nuevo" desde el gestor
         Pedido pedido = gestor.crearPedido(carrito);
 
         // Registrar el pedido en el historial
         historialController.registrarPedido(pedido);
 
-        // Mostrar mensaje de pedido NUEVO (en espera de confirmación de pago)
-        pedido.procesar("nuevo");  // ⚡ Se asegura que el estado sea "Nuevo"
+        // Mostrar mensaje del estado inicial (ya es "Nuevo")
         mostrarInfo("Pedido realizado", "📌 Estado actual: " + pedido.getEstado());
 
-        // Procesar el pago después de mostrar el mensaje del estado
+        // Procesar el pago
         ProcesarPago procesador = getProcesarPago();
         String resultado = procesador.ejecutarPago(pedido.calcularTotal());
         mostrarInfo("Resultado del pago", resultado);
 
-        // Aquí puedes cambiar el estado a "Pagado" si el pago fue exitoso
+        // Cambiar a "Pagado" solo si el pago fue exitoso
         if (resultado.toLowerCase().contains("exitoso")) {
-            pedido.procesar("pagar");  // ⚡ Cambia el estado a "Pagado" según tu patrón State
-            mostrarInfo("Estado actualizado", "✅ Estado actual: " + pedido.getEstado());
+            try {
+                pedido.procesar("pagar");  // ⚡ Cambia el estado a "Pagado"
+                mostrarInfo("Estado actualizado", "✅ Estado actual: " + pedido.getEstado());
+            } catch (IllegalArgumentException e) {
+                mostrarAlerta("Error de estado", e.getMessage());
+            }
         }
 
         // Actualizar el total del carrito
         actualizarTotal();
     }
+
 
 
 

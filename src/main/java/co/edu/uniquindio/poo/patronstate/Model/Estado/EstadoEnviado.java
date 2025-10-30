@@ -12,44 +12,45 @@ public class EstadoEnviado implements EstadoPedido {
 
     @Override
     public void pagar() {
-        throw new IllegalStateException("❌ El pedido ya fue pagado.");
+        throw new IllegalStateException("❌ Pago ya realizado.");
     }
 
     @Override
-    public void enviar() {
-        throw new IllegalStateException("❌ El pedido ya fue enviado.");
+    public void VerificacionPago() {
+        throw new IllegalStateException("❌ Pago ya verificado.");
     }
 
     @Override
-    public void entregar() {
-        System.out.println("📬 Pedido entregado al cliente.");
-        pedido.cambiarEstado(new EstadoEntregado(pedido));
+    public void Empaquetado() {
+        throw new IllegalStateException("❌ Pedido ya empaquetado.");
     }
 
     @Override
-    public void cancelar() {
-        throw new IllegalStateException("❌ No se puede cancelar, ya está en camino.");
+    public void Enviado() {
+        System.out.println("🚚 Pedido en camino.");
     }
 
     @Override
-    public void nuevo() {
-        System.out.println("📌 El pedido ya fue enviado, no puede volver a NUEVO.");
+    public void Entregado() {
+        System.out.println("🎉 Pedido entregado al cliente.");
+        pedido.cambiarEstado(new EstadoEntregado(pedido)); // 🔹 Cambia al siguiente estado
     }
 
-    @Override
-    public String toString() {
-        return "ENVIADO";
-    }
 
     @Override
     public void ejecutarAccion(String accion) {
         switch (accion.toLowerCase()) {
             case "pagar" -> pagar();
-            case "enviar" -> enviar();
-            case "entregar" -> entregar();
-            case "cancelar" -> cancelar();
-            case "nuevo" -> nuevo();
+            case "verificacionpago" -> VerificacionPago();
+            case "empaquetado" -> Empaquetado();
+            case "enviado" -> Enviado();
+            case "entregado" -> Entregado();
             default -> throw new IllegalArgumentException("⚠️ Acción no válida: " + accion);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ENVIADO";
     }
 }

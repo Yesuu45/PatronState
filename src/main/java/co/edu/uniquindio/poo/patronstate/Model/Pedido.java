@@ -1,9 +1,10 @@
 package co.edu.uniquindio.poo.patronstate.Model;
 
-import co.edu.uniquindio.poo.patronstate.Model.Estado.EstadoNuevo;
 import co.edu.uniquindio.poo.patronstate.Model.Estado.EstadoPedido;
+import co.edu.uniquindio.poo.patronstate.Model.Estado.EstadoPagado;
 
 public class Pedido {
+
     private String id;
     private CarritoDeCompras carrito;
     private EstadoPedido estado;
@@ -11,12 +12,14 @@ public class Pedido {
     public Pedido(String id, CarritoDeCompras carrito) {
         this.id = id;
         this.carrito = carrito;
-        this.estado = new EstadoNuevo(this);
+        this.estado = new EstadoPagado(this); // Estado inicial
     }
 
+    // Getters
     public String getId() {
         return id;
     }
+
     public CarritoDeCompras getCarrito() {
         return carrito;
     }
@@ -24,33 +27,29 @@ public class Pedido {
     public EstadoPedido getEstado() {
         return estado;
     }
-    public void setEstado(EstadoPedido estado) {
-        this.estado = estado;
-    }
 
-    public double calcularTotal() {
-        return carrito.calcularTotal();
-    }
-
+    // Cambiar el estado del pedido
     public void cambiarEstado(EstadoPedido nuevoEstado) {
         this.estado = nuevoEstado;
     }
 
-    public boolean procesar(String accion) {
-        try {
-            estado.ejecutarAccion(accion);
-            return true; // ✅ Si la acción se ejecutó sin errores
-        } catch (IllegalStateException e) {
-            System.out.println("🚫 No se puede realizar la acción: " + e.getMessage());
-            return false; // ❌ Acción inválida para el estado actual
-        }
+    // Calcular total
+    public double calcularTotal() {
+        return carrito.calcularTotal();
     }
 
-
-
-
-
-
-
+    public boolean procesar(String accion) {
+        if (estado != null) {
+            try {
+                estado.ejecutarAccion(accion); // delega al estado actual
+                return true;
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                System.out.println("🚫 Acción no válida: " + e.getMessage());
+                return false;
+            }
+        }
+        return false;
+    }
 
 }
+

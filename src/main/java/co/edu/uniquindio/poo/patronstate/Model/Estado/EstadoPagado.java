@@ -12,45 +12,44 @@ public class EstadoPagado implements EstadoPedido {
 
     @Override
     public void pagar() {
-        throw new IllegalStateException("❌ El pedido ya está pagado.");
+        System.out.println("💳 Pago ya realizado, esperando verificación.");
     }
 
     @Override
-    public void enviar() {
-        System.out.println("📦 Pedido enviado correctamente.");
-        pedido.cambiarEstado(new EstadoEnviado(pedido));
+    public void VerificacionPago() {
+        System.out.println("✔️ Pago verificado correctamente.");
+        pedido.cambiarEstado(new EstadoVerificarPago(pedido));
     }
 
     @Override
-    public void entregar() {
-        throw new IllegalStateException("❌ No se puede entregar sin haber sido enviado.");
+    public void Empaquetado() {
+        throw new IllegalStateException("❌ No se puede empaquetar antes de verificar el pago.");
     }
 
     @Override
-    public void cancelar() {
-        System.out.println("🛑 Pedido cancelado con reembolso.");
-        pedido.cambiarEstado(new EstadoCancelado(pedido));
+    public void Enviado() {
+        throw new IllegalStateException("❌ No se puede enviar antes de empaquetar.");
     }
 
     @Override
-    public void nuevo() {
-        System.out.println("📌 El pedido ya fue pagado, no puede volver a NUEVO.");
-    }
-
-    @Override
-    public String toString() {
-        return "PAGADO";
+    public void Entregado() {
+        throw new IllegalStateException("❌ No se puede entregar antes de enviar.");
     }
 
     @Override
     public void ejecutarAccion(String accion) {
         switch (accion.toLowerCase()) {
             case "pagar" -> pagar();
-            case "enviar" -> enviar();
-            case "entregar" -> entregar();
-            case "cancelar" -> cancelar();
-            case "nuevo" -> nuevo();
+            case "verificacionpago" -> VerificacionPago();
+            case "empaquetado" -> Empaquetado();
+            case "enviado" -> Enviado();
+            case "entregado" -> Entregado();
             default -> throw new IllegalArgumentException("⚠️ Acción no válida: " + accion);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "PAGADO";
     }
 }

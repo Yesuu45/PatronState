@@ -2,17 +2,17 @@ package co.edu.uniquindio.poo.patronstate.Model.Estado;
 
 import co.edu.uniquindio.poo.patronstate.Model.Pedido;
 
-public class EstadoEntregado implements EstadoPedido {
+public class EstadoEmpaquetado implements EstadoPedido {
 
     protected Pedido pedido;
 
-    public EstadoEntregado(Pedido pedido) {
+    public EstadoEmpaquetado(Pedido pedido) {
         this.pedido = pedido;
     }
 
     @Override
     public void pagar() {
-        throw new IllegalStateException("❌ Pedido ya pagado y entregado.");
+        throw new IllegalStateException("❌ Pago ya confirmado.");
     }
 
     @Override
@@ -22,17 +22,18 @@ public class EstadoEntregado implements EstadoPedido {
 
     @Override
     public void Empaquetado() {
-        throw new IllegalStateException("❌ Pedido ya empaquetado.");
+        System.out.println("📦 Pedido ya empaquetado.");
     }
 
     @Override
     public void Enviado() {
-        throw new IllegalStateException("❌ Pedido ya enviado.");
+        System.out.println("🚚 Pedido en camino.");
+        pedido.cambiarEstado(new EstadoEnviado(pedido));
     }
 
     @Override
     public void Entregado() {
-        System.out.println("📬 Pedido ya entregado.");
+        throw new IllegalStateException("❌ No se puede entregar antes de enviar.");
     }
 
     @Override
@@ -49,6 +50,7 @@ public class EstadoEntregado implements EstadoPedido {
 
     @Override
     public String toString() {
-        return "ENTREGADO";
+        return "EMPAQUETADO";
     }
 }
+

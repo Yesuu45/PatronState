@@ -22,10 +22,10 @@ import java.io.IOException;
 public class EstadoViewController {
 
     @FXML private Button botonVolver;
-    @FXML private Button botonEntregado;
-    @FXML private Button botonCancelar;
+    @FXML private Button botonVerificarPago;
+    @FXML private Button botonEmpaquetado;
     @FXML private Button botonEnviado;
-    @FXML private Button botonPagar; // 🔹 Nuevo botón
+    @FXML private Button botonEntregado;
 
     @FXML private TableView<Pedido> tablaPedidos;
     @FXML private TableColumn<Pedido, String> columnaId;
@@ -39,6 +39,7 @@ public class EstadoViewController {
     private void initialize() {
         gestorEstadosController = new GestorEstadosController();
 
+        // Configura las columnas de la tabla
         columnaId.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getId()));
         columnaEstado.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getEstado().toString()));
         columnaTotal.setCellValueFactory(param -> new SimpleDoubleProperty(param.getValue().calcularTotal()).asObject());
@@ -55,25 +56,25 @@ public class EstadoViewController {
         return pedido;
     }
 
-    // 🔹 Nuevo método para procesar el pago
+    // 🔹 Métodos para cambiar estado según el botón
     @FXML
-    void estadoPagado() {
-        cambiarEstadoPedido("pagar");
+    void verificarPago() {
+        cambiarEstadoPedido("verificacionpago"); // coincide con ejecutarAccion en EstadoVerificarPago
     }
 
     @FXML
-    void estadoEnviado() {
-        cambiarEstadoPedido("enviar");
+    void empaquetado() {
+        cambiarEstadoPedido("empaquetado");
     }
 
     @FXML
-    void estadoEntregado() {
-        cambiarEstadoPedido("entregar");
+    void enviado() {
+        cambiarEstadoPedido("enviado");
     }
 
     @FXML
-    void cancelarPedido() {
-        cambiarEstadoPedido("cancelar");
+    void entregado() {
+        cambiarEstadoPedido("entregado");
     }
 
     private void cambiarEstadoPedido(String accion) {
@@ -87,10 +88,10 @@ public class EstadoViewController {
                 tablaPedidos.refresh();
 
                 String mensaje = switch (accion) {
-                    case "pagar" -> "💳 El pedido fue PAGADO correctamente.";
-                    case "enviar" -> "📦 El pedido fue marcado como ENVIADO.";
-                    case "entregar" -> "🎉 El pedido fue marcado como ENTREGADO.";
-                    case "cancelar" -> "❌ El pedido fue CANCELADO.";
+                    case "verificacionpago" -> "💳 El pedido está en VERIFICACIÓN DE PAGO.";
+                    case "empaquetado" -> "📦 El pedido fue EMPAQUETADO correctamente.";
+                    case "enviado" -> "🚚 El pedido fue marcado como ENVIADO.";
+                    case "entregado" -> "🎉 El pedido fue ENTREGADO al cliente.";
                     default -> "✅ Acción realizada correctamente.";
                 };
 
@@ -112,6 +113,14 @@ public class EstadoViewController {
         a.showAndWait();
     }
 
+    private void mostrarAlerta(String titulo, String msg) {
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        a.setTitle(titulo);
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.showAndWait();
+    }
+
     @FXML
     void onVolver() {
         try {
@@ -123,13 +132,5 @@ public class EstadoViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void mostrarAlerta(String titulo, String msg) {
-        Alert a = new Alert(Alert.AlertType.WARNING);
-        a.setTitle(titulo);
-        a.setHeaderText(null);
-        a.setContentText(msg);
-        a.showAndWait();
     }
 }
